@@ -11,14 +11,14 @@ use Inhere\Exceptions\ExtensionMissException;
  * Class PhpHelper
  * @package MyLib\PhpUtil
  */
-class PhpHelper extends EnvHelper
+class PhpHelper
 {
     /**
-     * @param callable $cb
+     * @param callable|mixed $cb
      * @param array ...$args
      * @return mixed
      */
-    public static function call(callable $cb, ...$args)
+    public static function call($cb, ...$args)
     {
         if (\is_string($cb)) {
             // function
@@ -49,16 +49,6 @@ class PhpHelper extends EnvHelper
     public static function callByArray(callable $cb, array $args)
     {
         return self::call($cb, ...$args);
-    }
-
-    /**
-     * @param string $name
-     * @param null $default
-     * @return mixed
-     */
-    public static function serverParam($name, $default = null)
-    {
-        return Req::serverParam($name, $default);
     }
 
     /**
@@ -111,34 +101,6 @@ class PhpHelper extends EnvHelper
     }
 
     /**
-     * Converts an exception into a simple string.
-     * @param \Exception|\Throwable $e the exception being converted
-     * @param bool $getTrace
-     * @param null|string $catcher
-     * @return string the string representation of the exception.
-     */
-    public static function exceptionToString($e, $getTrace = true, $catcher = null): string
-    {
-        return PhpException::toString($e, $getTrace, $catcher);
-    }
-
-    public static function exceptionToHtml($e, $getTrace = true, $catcher = null): string
-    {
-        return PhpException::toHtml($e, $getTrace, $catcher);
-    }
-
-    /**
-     * @param \Exception|\Throwable $e
-     * @param bool $getTrace
-     * @param null $catcher
-     * @return string
-     */
-    public static function exceptionToJson($e, $getTrace = true, $catcher = null): string
-    {
-        return PhpException::toJson($e, $getTrace, $catcher);
-    }
-
-    /**
      * @return array
      */
     public static function getUserConstants(): array
@@ -188,52 +150,5 @@ class PhpHelper extends EnvHelper
     }
 
 
-    /**
-     * @param $name
-     * @param bool|false $throwException
-     * @return bool
-     * @throws ExtensionMissException
-     */
-    public static function extIsLoaded($name, $throwException = false): bool
-    {
-        $result = \extension_loaded($name);
-
-        if (!$result && $throwException) {
-            throw new ExtensionMissException("Extension [$name] is not loaded.");
-        }
-
-        return $result;
-    }
-
-    /**
-     * 检查多个扩展加载情况
-     * @param array $extensions
-     * @return array|bool
-     */
-    public static function checkExtList(array $extensions = array())
-    {
-        $allTotal = [];
-
-        foreach ($extensions as $extension) {
-            if (!\extension_loaded($extension)) {
-                # 没有加载此扩展，记录
-                $allTotal['no'][] = $extension;
-            } else {
-                $allTotal['yes'][] = $extension;
-            }
-        }
-
-        return $allTotal;
-    }
-
-    /**
-     * 返回加载的扩展
-     * @param bool $zend_extensions
-     * @return array
-     */
-    public static function getLoadedExtension($zend_extensions = false): array
-    {
-        return get_loaded_extensions($zend_extensions);
-    }
 
 }

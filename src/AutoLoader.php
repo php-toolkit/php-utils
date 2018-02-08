@@ -109,7 +109,7 @@ class AutoLoader
     public static function addFiles(array $files)
     {
         if (self::$files) {
-            self::$files = array_merge(self::$files, $files);
+            self::$files = \array_merge(self::$files, $files);
         } else {
             self::$files = $files;
         }
@@ -134,7 +134,7 @@ class AutoLoader
     public function addPsr0Map(array $psr0Map)
     {
         if ($this->psr0Map) {
-            $this->psr0Map = array_merge($this->psr0Map, $psr0Map);
+            $this->psr0Map = \array_merge($this->psr0Map, $psr0Map);
         } else {
             $this->psr0Map = $psr0Map;
         }
@@ -163,7 +163,7 @@ class AutoLoader
     public function addPsr4Map(array $psr4Map)
     {
         if ($this->psr4Map) {
-            $this->psr4Map = array_merge($this->psr4Map, $psr4Map);
+            $this->psr4Map = \array_merge($this->psr4Map, $psr4Map);
         } else {
             $this->psr4Map = $psr4Map;
         }
@@ -207,7 +207,7 @@ class AutoLoader
     public function addClassMap(array $classMap)
     {
         if ($this->classMap) {
-            $this->classMap = array_merge($this->classMap, $classMap);
+            $this->classMap = \array_merge($this->classMap, $classMap);
         } else {
             $this->classMap = $classMap;
         }
@@ -219,7 +219,7 @@ class AutoLoader
      */
     public function register($prepend = false)
     {
-        spl_autoload_register(array($this, 'loadClass'), true, $prepend);
+        \spl_autoload_register(array($this, 'loadClass'), true, $prepend);
     }
 
     /**
@@ -227,7 +227,7 @@ class AutoLoader
      */
     public function unRegister()
     {
-        spl_autoload_unregister(array($this, 'loadClass'));
+        \spl_autoload_unregister(array($this, 'loadClass'));
     }
 
     /**
@@ -255,7 +255,7 @@ class AutoLoader
     {
         // work around for PHP 5.3.0 - 5.3.2 https://bugs.php.net/50731
         if ('\\' === $class[0]) {
-            $class = (string)substr($class, 1);
+            $class = (string)\substr($class, 1);
         }
 
         // class map lookup
@@ -276,25 +276,25 @@ class AutoLoader
     private function findFileWithExtension($class, $ext)
     {
         // PSR-4 lookup
-        $logicalPathPsr4 = str_replace('\\', DIRECTORY_SEPARATOR, $class) . $ext;
+        $logicalPathPsr4 = \str_replace('\\', DIRECTORY_SEPARATOR, $class) . $ext;
 
         // PSR-4
         foreach ($this->psr4Map as $prefix => $dir) {
-            if (0 === strpos($class, $prefix)) {
+            if (0 === \strpos($class, $prefix)) {
                 $length = \strlen($prefix);
 
-                if (file_exists($file = $dir . DIRECTORY_SEPARATOR . substr($logicalPathPsr4, $length))) {
+                if (\file_exists($file = $dir . DIRECTORY_SEPARATOR . substr($logicalPathPsr4, $length))) {
                     return $file;
                 }
             }
         }
 
         // PEAR-like class name
-        $logicalPathPsr0 = str_replace('_', DIRECTORY_SEPARATOR, $class) . $ext;
+        $logicalPathPsr0 = \str_replace('_', DIRECTORY_SEPARATOR, $class) . $ext;
 
         foreach ($this->psr0Map as $prefix => $dir) {
-            if (0 === strpos($class, $prefix)) {
-                if (file_exists($file = $dir . DIRECTORY_SEPARATOR . $logicalPathPsr0)) {
+            if (0 === \strpos($class, $prefix)) {
+                if (\file_exists($file = $dir . DIRECTORY_SEPARATOR . $logicalPathPsr0)) {
                     return $file;
                 }
             }
